@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - '**/frontend/'
+      - '**/backend/core/settings.py'
 
 jobs:
   tests:

@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'k5!l81my9331w)mc-mj^yhodel0$&pklk3_)51k975n2ku9kyx'
