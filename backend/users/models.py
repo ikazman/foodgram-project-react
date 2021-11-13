@@ -17,7 +17,6 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=150, blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=USER)
 
-
     class Meta:
         ordering = ['username']
 
