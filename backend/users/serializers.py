@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('user',
+        fields = ('username',
                   'password',
                   'email',
                   'first_name',
@@ -16,11 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-
-    def validate_username(self, value):
-        if value.lower() == 'me':
-            raise serializers.ValidationError('"me" not allowed as username')
-        return value
 
     class Meta:
         model = User
