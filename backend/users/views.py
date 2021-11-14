@@ -46,23 +46,22 @@ class SignupViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data.get('username')
         email = serializer.validated_data.get('email')
+        first_name = serializer.validated_data.get('first_name')
+        last_name = serializer.validated_data.get('last_name')
+        password = serializer.validated_data.get('password')
 
-        user, _ = User.objects.get_or_create(username=username,
-                                             email=email)
-        self.send_code(user, email)
+        User.objects.get_or_create(username=username,
+                                   email=email,
+                                   first_name=first_name,
+                                   last_name=last_name,
+                                   password=password)
+
         return Response({'email': email,
-                         'username': username},
+                         'username': username,
+                         'first_name': first_name,
+                         'last_name': last_name,
+                         'password': password},
                         status=status.HTTP_200_OK)
-
-    def send_code(self, user, email):
-        confirmation_code = default_token_generator.make_token(user)
-        send_mail(
-            'Подтверждение пользователя',
-            f'Код верификации: {confirmation_code}',
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-            fail_silently=False,
-        )
 
 
 class TokenViewSet(viewsets.ModelViewSet):
@@ -73,10 +72,10 @@ class TokenViewSet(viewsets.ModelViewSet):
     def token(self, request):
         serializer = TokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        username = serializer.validated_data.get('username')
-        confirmation_code = serializer.validated_data.get('confirmation_code')
-        user = get_object_or_404(User, username=username)
-        if default_token_generator.check_token(user, confirmation_code):
+        password = serializer.validated_data.get('password')
+        email = serializer.validated_data.get('email')
+        user = get_object_or_404(User, email=email, password=password)
+        if default_token_generator.check_token(user, email):
             refresh_token = RefreshToken.for_user(user)
             return Response({'token': str(refresh_token.access_token)})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
