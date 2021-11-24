@@ -2,13 +2,16 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 SECRET_KEY = '@xtud%7iroyt*hv=^r(%67(#e38uc#!vp_#c(th+#82f5g&0rd'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
+    'users',
+    'recipes',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -16,7 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'recipes'
+    'rest_framework.authtoken',
+    'django_filters',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +80,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.UserSerializer',
+        'user': 'users.serializers.UserSerializer',
+        'current_user': 'users.serializers.UserSerializer',
+    },
+    'PERMISSIONS': {
+        'user': ('rest_framework.permissions.IsAuthenticated',),
+        'user_list': ('rest_framework.permissions.AllowAny',)
+    }
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$'
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
@@ -85,8 +117,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+
+STATIC_URL = '/backend_static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTH_USER_MODEL = 'users.User'
