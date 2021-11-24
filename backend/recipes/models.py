@@ -4,7 +4,7 @@ from users.models import User
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField()
     image = models.ImageField()
     text = models.TextField()
@@ -26,16 +26,16 @@ class Ingredient(models.Model):
 
 
 class IngredientAmount(models.Model):
-    ingredient = models.ForeignKey(Ingredient)
-    recipe = models.ForeignKey(Recipe)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     amount = models.PositiveSmallIntegerField()
 
 
 class ShoppingCart(models.Model):
-    recipe = models.ForeignKey(Recipe)
-    user = models.ForeignKey(User)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Favorite(models.Model):
-    recipe = models.ForeignKey(Recipe)
-    user = models.ForeignKey(User)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
