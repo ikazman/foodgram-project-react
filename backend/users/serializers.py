@@ -1,11 +1,10 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
 from .models import Follow, User
 
 
-class UserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+class UserSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -15,31 +14,16 @@ class UserSerializer(UserSerializer):
             'username',
             'first_name',
             'last_name',
+            'password'
             'is_subscribed')
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request is None:
-            return False
-        if request.user.is_anonymous:
-            return False
-        else:
-            return Follow.objects.filter(user=request.user,
-                                         author=obj).exists()
+        return (request.user.is_authenticated
+                and obj.filter(user=request.user).exists())
 
-
-class RegisterSerializer(UserCreateSerializer):
-
-    def validate_username(self, value):
-        if value.lower() == 'me':
-            raise serializers.ValidationError('"me" not allowed as username')
-        return value
-
-    class Meta:
-        model = User
-        fields = ('id',
-                  'email',
-                  'username',
-                  'first_name',
-                  'last_name',
-                  'password',)
+    def perform_create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user

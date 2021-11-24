@@ -17,11 +17,8 @@ class User(AbstractUser):
     password = models.CharField(max_length=150)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=USER)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
     class Meta:
-        ordering = ['username']
+        ordering = ['id']
 
     @property
     def is_admin(self):
