@@ -3,7 +3,8 @@ from users.models import User
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name='recipes')
     name = models.CharField()
     image = models.ImageField()
     text = models.TextField()
@@ -32,7 +33,8 @@ class IngredientAmount(models.Model):
 
 class ShoppingCart(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='recipes_list')
 
 
 class Favorite(models.Model):
