@@ -11,7 +11,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'measurment_unit')
+    list_display = ('pk', 'name', 'measurement_unit')
     search_fields = ('name',)
     list_filter = ('name',)
     empty_value_display = '-пусто-'
@@ -19,7 +19,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class TagAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'color', 'slug')
-    search_fields = ('name')
+    search_fields = ('name',)
     list_filter = ('name',)
     prepopulated_fields = {'slug': ('name',)}
     empty_value_display = '-пусто-'

@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
                             ShoppingCart, Tag)
+from users.models import User
 from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -99,3 +100,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response = HttpResponse(buy_list, content_type='plain/text')
         response['Content-Disposition'] = f'attachment; filename="buy_list.txt"'
         return response
+
+
+class FollowViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.FollowSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return User.objects.filter(following__user=self.request.user)

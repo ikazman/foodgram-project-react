@@ -5,7 +5,7 @@ from users.models import User
 class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes')
-    name = models.CharField()
+    name = models.CharField(max_length=150)
     image = models.ImageField()
     text = models.TextField()
     tags = models.ManyToManyField('Tag')
@@ -15,14 +15,14 @@ class Recipe(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField()
-    color = models.CharField()
+    name = models.CharField(max_length=150)
+    color = models.CharField(max_length=150)
     slug = models.SlugField()
 
 
 class Ingredient(models.Model):
-    name = models.CharField()
-    measurement_unit = models.CharField()
+    name = models.CharField(max_length=150)
+    measurement_unit = models.CharField(max_length=150)
 
 
 class IngredientAmount(models.Model):

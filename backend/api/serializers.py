@@ -68,11 +68,9 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class RecipeFollowSerializer(serializers.ModelSerializer):
     name = serializers.SlugRelatedField(queryset=Recipe.objects.all(),
-                                        read_only=True,
                                         slug_field='name')
     image = Base64ImageField(read_only=True)
     cooking_time = serializers.SlugRelatedField(queryset=Recipe.objects.all(),
-                                                read_only=True,
                                                 slug_field='cooking_time')
 
     class Meta:
@@ -84,11 +82,9 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     id = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
     name = serializers.SlugRelatedField(queryset=Recipe.objects.all(),
-                                        read_only=True,
                                         slug_field='name')
     image = Base64ImageField(read_only=True)
     cooking_time = serializers.SlugRelatedField(queryset=Recipe.objects.all(),
-                                                read_only=True,
                                                 slug_field='cooking_time')
 
     class Meta:
@@ -100,11 +96,9 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     id = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
     name = serializers.SlugRelatedField(queryset=Recipe.objects.all(),
-                                        read_only=True,
                                         slug_field='name')
     image = Base64ImageField(read_only=True)
     cooking_time = serializers.SlugRelatedField(queryset=Recipe.objects.all(),
-                                                read_only=True,
                                                 slug_field='cooking_time')
 
     class Meta:
@@ -132,7 +126,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        return obj.filter(user=request.user).exists())
+        return obj.filter(user=request.user).exists()
 
     def get_recipes(self, obj):
         request=self.context.get('request')
