@@ -1,11 +1,14 @@
 from django.contrib import admin
-from recipes.models import Ingredient, IngredientAmount, Recipe, Tag
+from recipes.models import Ingredient, IngredientsAmount, Recipe, Tag
 from users.models import Follow, User
+
+from .inlines import IngredientAmountInline
 
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'name', 'author')
     search_fields = ('text',)
+    inlines = (IngredientAmountInline,)
     list_filter = ('author', 'name', 'tags')
     empty_value_display = '-пусто-'
 
@@ -40,7 +43,7 @@ class FollowAdmin(admin.ModelAdmin):
 
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(IngredientAmount, IngredientAmountAdmin)
+admin.site.register(IngredientsAmount, IngredientAmountAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(User)

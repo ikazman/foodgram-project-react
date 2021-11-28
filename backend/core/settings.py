@@ -3,11 +3,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-SECRET_KEY = 'm%(5u7nv9j2%@3xb%#c3p-$9&0$kq$j6l@9+@ogairu48a+dy+'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='hhz7l-ltdismtf@bzyz+rple7*s*w$jak%whj@(@u0eok^f9k4')
 
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', default=['*'])
 
 INSTALLED_APPS = [
     'users',
@@ -57,7 +57,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
+sqlite = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+postgres = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', default='django.db.backends.postgresql'),
         'NAME': os.environ.get('DB_NAME', default='postgres'),
@@ -67,6 +74,8 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', default='5432'),
     }
 }
+
+DATABASES = sqlite if DEBUG else postgres
 
 AUTH_PASSWORD_VALIDATORS = [
     {

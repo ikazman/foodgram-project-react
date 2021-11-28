@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import F, Q
 
 
 class User(AbstractUser):
@@ -24,6 +25,9 @@ class User(AbstractUser):
     def is_admin(self):
         return self.role == 'admin'
 
+    def __str__(self):
+        return self.username
+
 
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
@@ -35,6 +39,8 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user', 'author'],
                                     name='unique_pair'),
+            models.CheckConstraint(check=~Q(user=F('following')),
+                                   name='forbidden_selfsubscribe'),
         ]
 
     def __str__(self):
