@@ -25,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = FollowSerializer(author,
                                           context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
-        Follow.objects.filter(user=request.user, following=author).delete()
+        Follow.objects.filter(user=request.user, author=author).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

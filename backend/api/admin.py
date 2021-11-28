@@ -36,8 +36,8 @@ class IngredientAmountAdmin(admin.ModelAdmin):
 
 
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('user', 'following')
-    search_fields = ('following',)
+    list_display = ('user', 'author')
+    search_fields = ('author',)
     empty_value_display = '-пусто-'
 
 

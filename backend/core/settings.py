@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
+    'colorfield',
     'django_filters',
     'djoser',
 ]
@@ -75,7 +76,8 @@ postgres = {
     }
 }
 
-DATABASES = sqlite if DEBUG else postgres
+# DATABASES = sqlite if DEBUG else postgres
+DATABASES = sqlite
 
 AUTH_PASSWORD_VALIDATORS = [
     {
