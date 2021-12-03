@@ -4,26 +4,17 @@ from django.db.models import F, Q
 
 
 class User(AbstractUser):
-    USER = 'user'
-    ADMIN = 'admin'
-    ROLE_CHOICES = (
-        (USER, 'user'),
-        (ADMIN, 'admin'),
-    )
-
     email = models.EmailField(max_length=254, unique=True)
-    username = models.CharField(max_length=150, unique=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    username = models.CharField(max_length=150, unique=True, blank=False)
+    first_name = models.CharField(max_length=150, blank=False)
+    last_name = models.CharField(max_length=150, blank=False)
     password = models.CharField(max_length=150)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=USER)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     class Meta:
         ordering = ['id']
-
-    @property
-    def is_admin(self):
-        return self.role == 'admin'
 
     def __str__(self):
         return self.username

@@ -1,37 +1,35 @@
-from django_filters import FilterSet, filters
+import django_filters.rest_framework as django_filters
+from django_filters.rest_framework import FilterSet
+
 from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(FilterSet):
-    name = filters.CharFilter(field_name='name', lookup_expr='istartswith')
+    name = django_filters.CharFilter(lookup_expr='contains')
 
     class Meta:
         model = Ingredient
-        fields = ['name']
+        fields = ('name', )
 
 
 class RecipeFilter(FilterSet):
-    author = filters.CharFilter(field_name='author__id', lookup_expr='exact')
-    tags = filters.AllValuesMultipleFilter(
-        field_name='tags__slug',
-        lookup_expr='iexact',
-    )
-    is_favorited = filters.BooleanFilter(method='is_in_favorited')
-    is_in_shopping_cart = filters.BooleanFilter(method='is_shopping_cart')
+    tags = django_filters.CharFilter(field_name='tags', lookup_expr='exact')
+    author = django_filters.CharFilter(field_name='author', lookup_expr='exact')
+    is_in_favorited = django_filters.BooleanFilter(
+        method='filter_is_favorited')
+    is_in_shopping_cart = django_filters.BooleanFilter(
+        method='filter_is_in_shopping_cart')
 
-    def is_in_favorited(self, queryset, name, value):
+    def filter_is_favorited(self, queryset, value):
         if value:
-            return queryset.filter(favorites_recipe__user=self.request.user)
+            return queryset.filter(favorites__user=self.request.user)
         return queryset
 
-    def is_shopping_cart(self, queryset, name, value):
+    def filter_is_in_shopping_cart(self, queryset, value):
         if value:
-            return queryset.filter(carts__user=self.request.user)
+            return queryset.filter(cart__user=self.request.user)
         return queryset
 
     class Meta:
         model = Recipe
-        fields = ('author',
-                  'tags',
-                  'is_favorited',
-                  'is_in_shopping_cart',)
+        fields = ('tags', 'author',)

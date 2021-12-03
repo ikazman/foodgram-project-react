@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework import serializers
+
 from recipes.models import (Favorite, Ingredient, IngredientsAmount, Recipe,
                             ShoppingCart, Tag)
-from rest_framework import serializers
 from users.serializers import UserSerializer
 
 
@@ -14,9 +15,9 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientAmountSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+
+    id = serializers.IntegerField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    amount = serializers.IntegerField()
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
 
@@ -33,12 +34,12 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
     ingredients = IngredientAmountSerializer(source='recipes_amount',
                                              many=True)
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                              many=True)
+    tags = TagSerializer(read_only=True, many=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
 
@@ -69,35 +70,48 @@ class RecipeSerializer(serializers.ModelSerializer):
                 and Favorite.objects.filter(recipe=obj,
                                             user=request.user).exists())
 
-    def populate_amount(self, ingredients, recipe):
+    def create_amount(self, ingredients, recipe):
         for item in ingredients:
             id = item['ingredient']['id']
-            ingredient = get_object_or_404(Ingredient, id=id)
             amount = item['amount']
             IngredientsAmount.objects.create(
-                ingredient=ingredient,
+                ingredient=Ingredient(id=id),
                 recipe=recipe,
                 amount=amount)
 
-    def create(self, data):
-        ingredients = data.pop('recipes_amount')
-        tags_in = data.pop('tags')
-        recipe = Recipe.objects.create(**data)
-        for tag in tags_in:
-            recipe.tags.add(tag)
-        self.populate_amount(ingredients, recipe)
+    def create(self, validated_data):
+        ingredients_data = validated_data.pop('recipes_amount')
+        recipe = Recipe.objects.create(**validated_data)
+        tags_in = self.initial_data.get('tags')
+        recipe.tags.set(tags_in)
+        self.create_amount(ingredients_data, recipe)
         return recipe
 
-    def update(self, data):
-        ingredients = data.pop('recipes_amount')
-        tags_in = data.pop('tags')
-        recipe = super().update(recipe, data)
-        recipe.tags.clear()
-        for tag in tags_in:
-            recipe.tags.add(tag)
-        recipe.ingredients.clear()
-        self.populate_amount(ingredients, recipe)
-        return recipe
+    def update(self, validated_data):
+        ingredients_data = validated_data.pop('recipes_amount')
+        tags_in = validated_data.pop('tags')
+        instance = super().update(instance, validated_data)
+        instance.tags.clear()
+        instance.tags.set(tags_in)
+        instance.ingredients.clear()
+        self.create_amount(ingredients_data, instance)
+        return instance
+
+    def validate_ingredients(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        if not ingredients:
+                return serializers.ValidationError(
+                    'В рецепте отсутствуют ингредиенты!')
+        for item in ingredients:
+            if int(item['amount']) < 1:
+                return serializers.ValidationError(
+                    'Количество ингридиента не может быть нулевым!')
+        return data
+
+    def validate_cooking_time(self, data):
+        if data < 1:
+            return serializers.ValidationError('Время должно быть больше нуля!')
+        return data
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):

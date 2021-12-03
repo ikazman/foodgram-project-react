@@ -1,6 +1,7 @@
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import Recipe
 from rest_framework import serializers
+
+from recipes.models import Recipe
 
 from .models import Follow, User
 
@@ -18,6 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'password',
             'is_subscribed')
+        extra_kwargs = {field: {'required': True}
+                        for field in fields if field == 'id'}
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
@@ -56,16 +59,15 @@ class FollowSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'is_subscribed',
-            'recipes_list',
+            'recipes',
             'recipes_count')
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        return Follow.objects.filter(author=obj, user=request.user).exists()
+        return Follow.objects.filter(author=obj.user, user=obj.author).exists()
 
-    def get_recipes_list(self, obj):
+    def get_recipes(self, obj):
         request = self.context.get('request')
-        recipes_limit = int(self.context.get('recipes_limit'))
+        recipes_limit = int(request.GET.get('recipes_limit'))
         if recipes_limit:
             recipes = obj.recipes.all()[:recipes_limit]
         else:
