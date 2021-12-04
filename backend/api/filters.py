@@ -1,8 +1,8 @@
 
 from django_filters import FilterSet, filters
-
 from recipes.models import Ingredient, Recipe
 from users.models import User
+
 
 class IngredientFilter(FilterSet):
 

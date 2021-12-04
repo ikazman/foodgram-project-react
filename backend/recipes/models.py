@@ -1,7 +1,5 @@
 from colorfield.fields import ColorField
 from django.db import models
-from django.db.models import constraints
-
 from users.models import User
 
 
@@ -60,7 +58,6 @@ class Recipe(models.Model):
             fields=['author', 'name'], name='unique_recipe_pair')]
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-
 
 
 class IngredientsAmount(models.Model):

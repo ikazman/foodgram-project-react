@@ -1,9 +1,7 @@
-from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-
 from recipes.models import (Favorite, Ingredient, IngredientsAmount, Recipe,
                             ShoppingCart, Tag)
+from rest_framework import serializers
 from users.serializers import UserSerializer
 
 
@@ -100,8 +98,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, data):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
-                return serializers.ValidationError(
-                    'В рецепте отсутствуют ингредиенты!')
+            return serializers.ValidationError(
+                'В рецепте отсутствуют ингредиенты!')
         for item in ingredients:
             if int(item['amount']) < 1:
                 return serializers.ValidationError(
