@@ -57,8 +57,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                                    user=request.user)
             serializer = serializers.ShoppingCartSerializer(instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        ShoppingCart.objects.filter(recipe=recipe, user=request.user).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.method == 'DELETE':
+            ShoppingCart.objects.filter(recipe=recipe,
+            user=request.user).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return None
 
     @action(methods=['get'],
             detail=False,
@@ -94,5 +97,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                                user=request.user)
             serializer = serializers.FavoriteSerializer(instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        Favorite.objects.filter(recipe=recipe, user=request.user).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.method == 'DELETE':
+            Favorite.objects.filter(recipe=recipe, user=request.user).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return None
