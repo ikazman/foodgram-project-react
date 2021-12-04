@@ -46,7 +46,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True,
             methods=['get', 'delete'],
-            permission_classes=[IsAuthenticated, ],
+            permission_classes=[IsAuthenticated],
             url_path='shopping_cart')
     def shopping_cart(self, request, pk=None):
         recipe = self.get_object()
@@ -63,7 +63,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'],
             detail=False,
-            permission_classes=(IsAuthenticated,),
+            permission_classes=[IsAuthenticated],
             url_path='download_shopping_cart')
     def download_shopping_cart(self, request):
         download_dict = {}
@@ -86,7 +86,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True,
             methods=['get', 'delete'],
-            permission_classes=[IsAuthenticated, ],
+            permission_classes=[IsAuthenticated],
             url_path='favorite')
     def favorite(self, request, pk=None):
         recipe = self.get_object()

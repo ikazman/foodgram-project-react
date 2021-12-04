@@ -45,6 +45,7 @@ class RecipeFollowSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+
     is_subscribed = serializers.SerializerMethodField(read_only=True)
     recipes_list = serializers.SerializerMethodField(read_only=True)
     recipes_count = serializers.SerializerMethodField(read_only=True)
