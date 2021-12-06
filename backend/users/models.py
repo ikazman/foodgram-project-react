@@ -23,16 +23,16 @@ class User(AbstractUser):
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='follower', verbose_name='Подписчик')
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
+    following = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='following', verbose_name='Автор')
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'author'],
+            models.UniqueConstraint(fields=['user', 'following'],
                                     name='unique_pair'),
-            models.CheckConstraint(check=~Q(user=F('author')),
+            models.CheckConstraint(check=~Q(user=F('following')),
                                    name='forbidden_selfsubscribe'),
         ]
 
     def __str__(self):
-        return f'{self.user} подписан на {self.author}'
+        return f'{self.user} подписан на {self.following}'

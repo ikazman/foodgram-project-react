@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
         return (request.user.is_authenticated
-                and Follow.objects.filter(author=obj,
+                and Follow.objects.filter(following=obj,
                                           user=request.user).exists())
 
     def create(self, validated_data):
@@ -64,17 +64,15 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        return Follow.objects.filter(author=obj.author,
-                                     user=request.user).exists()
+        return Follow.objects.filter(following=obj, user=request.user).exists()
 
     def get_recipes(self, obj):
-        request = self.context.get('request')
-        recipes_limit = int(request.GET.get('recipes_limit'))
-        if recipes_limit:
-            recipes = obj.recipes.all()[:recipes_limit]
-        else:
-            recipes = obj.recipes.all()
-        serializer = RecipeFollowSerializer(recipes, many=True)
+        request_params = self.context['request'].query_params
+        queryset = Recipe.objects.filter(author=obj).order_by('-id')
+        if request_params:
+            recipes_limit = int(request_params['recipes_limit'])
+            queryset = queryset[:recipes_limit]
+        serializer = RecipeFollowSerializer(queryset, many=True)
         return serializer.data
 
     def get_recipes_count(self, obj):

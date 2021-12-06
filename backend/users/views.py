@@ -1,4 +1,4 @@
-from rest_framework import filters, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -8,12 +8,10 @@ from .serializers import FollowSerializer, UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
-    lookup_field = 'id'
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['id', ]
 
     @action(detail=True,
             permission_classes=[IsAuthenticated],
@@ -22,11 +20,11 @@ class UserViewSet(viewsets.ModelViewSet):
     def subscribe(self, request, pk=None):
         author = self.get_object()
         if request.method == 'GET':
-            instance = Follow.objects.create(user=request.user, author=author)
-            serializer = FollowSerializer(instance)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            Follow.objects.create(user=request.user, following=author)
+            serializer = FollowSerializer(author, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         elif request.method == 'DELETE':
-            Follow.objects.filter(user=request.user, author=author).delete()
+            Follow.objects.filter(user=request.user, following=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return None
 

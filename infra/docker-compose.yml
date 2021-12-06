@@ -9,9 +9,7 @@ services:
       - ./.env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: ikazmandockerhub/foodgram
     volumes:
       - static_value:/code/static/
       - media_value:/code/media/
