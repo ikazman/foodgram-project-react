@@ -47,7 +47,7 @@ class RecipeFollowSerializer(serializers.ModelSerializer):
 class FollowSerializer(serializers.ModelSerializer):
 
     is_subscribed = serializers.SerializerMethodField(read_only=True)
-    recipes_list = serializers.SerializerMethodField(read_only=True)
+    recipes = serializers.SerializerMethodField(read_only=True)
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -63,7 +63,9 @@ class FollowSerializer(serializers.ModelSerializer):
             'recipes_count')
 
     def get_is_subscribed(self, obj):
-        return Follow.objects.filter(author=obj.user, user=obj.author).exists()
+        request = self.context.get('request')
+        return Follow.objects.filter(author=obj.author,
+                                     user=request.user).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -76,4 +78,4 @@ class FollowSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_recipes_count(self, obj):
-        return obj.recipes.count()
+        return Recipe.objects.filter(author=obj).count()

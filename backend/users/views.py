@@ -17,10 +17,10 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ['id', ]
 
     @action(detail=True,
-            permission_classes=[AllowAny],
+            permission_classes=[IsAuthenticated],
             methods=['delete', 'get'],
             url_path='subscribe')
-    def subscribe(self, request):
+    def subscribe(self, request, pk=None):
         author = self.get_object()
         if request.method == 'GET':
             instance = Follow.objects.create(user=request.user, author=author)

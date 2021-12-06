@@ -1,4 +1,4 @@
-name: yamdb_final workflow
+name: foodgram_project_react
 
 on:
   push:

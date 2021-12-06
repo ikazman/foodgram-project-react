@@ -96,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -112,6 +112,7 @@ DJOSER = {
         'user': 'users.serializers.UserSerializer',
         'current_user': 'users.serializers.UserSerializer',
     },
+    'HIDE_USERS': False,
     'PERMISSIONS': {
         'user': ('rest_framework.permissions.IsAuthenticated',),
         'user_list': ('rest_framework.permissions.AllowAny',)
