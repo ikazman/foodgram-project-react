@@ -22,9 +22,11 @@ class User(AbstractUser):
 
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name='follower', verbose_name='Подписчик')
+                             related_name='follower',
+                             verbose_name='Подписчик')
     following = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='following', verbose_name='Автор')
+                                  related_name='following',
+                                  verbose_name='Автор')
 
     class Meta:
         constraints = [
