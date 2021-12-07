@@ -1,7 +1,6 @@
-from recipes.models import Ingredient, IngredientsAmount, Recipe, Tag
-
 from django.contrib import admin
 
+from recipes.models import Ingredient, IngredientsAmount, Recipe, Tag
 from users.models import Follow, User
 
 from .inlines import IngredientAmountInline

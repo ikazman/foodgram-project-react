@@ -1,10 +1,9 @@
 import csv
 import os
 
-from recipes.models import Ingredient, Tag
-
 from django.core.management import BaseCommand
 
+from recipes.models import Ingredient, Tag
 from users.models import User
 
 
