@@ -1,7 +1,8 @@
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-
 from recipes.models import Recipe
+
+from django.contrib.auth import password_validation
+from rest_framework import serializers
 
 from .models import Follow, User
 
@@ -21,6 +22,10 @@ class UserSerializer(serializers.ModelSerializer):
             'is_subscribed')
         extra_kwargs = {field: {'required': True}
                         for field in fields if field == 'id'}
+
+    def validate_password(self, value):
+        password_validation.validate_password(value, self.instance)
+        return value
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')

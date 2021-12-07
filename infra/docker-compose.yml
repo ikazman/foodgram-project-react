@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: ikazmandockerhub/foodgram:v2
+    image: ikazmandockerhub/foodgram:latest
     volumes:
       - static_value:/code/static/
       - media_value:/code/media/
