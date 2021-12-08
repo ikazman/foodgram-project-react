@@ -57,8 +57,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
-          sudo docker-compose stop
-          sudo docker-compose rm backend
           touch .env 
           echo DEBUG=${{ secrets.DEBUG }} >> .env
           echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
