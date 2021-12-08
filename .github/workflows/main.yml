@@ -58,9 +58,8 @@ jobs:
         host: ${{ secrets.CLOUD_HOST }}
         username: ${{ secrets.CLOUD_USER }}
         key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          sudo docker pull ikazmandockerhub/yamdb:latest
+          sudo docker pull ikazmandockerhub/foodgram:latest
           sudo docker-compose stop
           sudo docker-compose rm web
           touch .env 
