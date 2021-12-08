@@ -55,8 +55,11 @@ jobs:
         host: ${{ secrets.CLOUD_HOST }}
         username: ${{ secrets.CLOUD_USER }}
         key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
+          sudo docker pull ikazmandockerhub/foodgram:latest
+          sudo docker-compose stop
+          sudo docker-compose rm backend
           touch .env 
           echo DEBUG=${{ secrets.DEBUG }} >> .env
           echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
