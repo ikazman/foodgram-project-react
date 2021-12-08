@@ -59,12 +59,11 @@ jobs:
         username: ${{ secrets.CLOUD_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          sudo docker pull ikazmandockerhub/foodgram:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
           sudo docker-compose stop
           sudo docker-compose rm web
           touch .env 
           echo DEBUG=${{ secrets.DEBUG }} >> .env
-          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
           echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
