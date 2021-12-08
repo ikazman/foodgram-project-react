@@ -57,7 +57,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          sudo docker pull ikazmandockerhub/foodgram:latest
+          sudo docker pull ikazmandockerhub/foodgram
           sudo docker-compose stop
           sudo docker-compose rm backend
           touch .env 
