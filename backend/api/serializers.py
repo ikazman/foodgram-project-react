@@ -59,6 +59,10 @@ class RecipeSerializer(serializers.ModelSerializer):
             'is_favorited',
         )
 
+    def to_representation(self, obj):
+        self.fields['tags'] = TagSerializer(many=True)
+        return super().to_representation(obj)
+
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         return (request.user.is_authenticated
