@@ -11,7 +11,9 @@ from rest_framework.response import Response
 from recipes.models import (Favorite, Ingredient, IngredientsAmount, Recipe,
                             ShoppingCart, Tag,)
 
-from . import serializers
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeSerializer, ShoppingCartSerializer,
+                          TagSerializer,)
 from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsAuthorOrReadOnly
 
@@ -21,14 +23,14 @@ User = get_user_model()
 class TagViewSet(viewsets.ModelViewSet):
 
     queryset = Tag.objects.all()
-    serializer_class = serializers.TagSerializer
+    serializer_class = TagSerializer
     pagination_class = None
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
 
     queryset = Ingredient.objects.all()
-    serializer_class = serializers.IngredientSerializer
+    serializer_class = IngredientSerializer
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = IngredientFilter
     pagination_class = None
@@ -37,7 +39,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all().order_by('-id')
-    serializer_class = serializers.RecipeSerializer
+    serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly,
                           IsAuthorOrReadOnly, ]
     filter_backends = [DjangoFilterBackend, ]
@@ -56,10 +58,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk=None):
         recipe = self.get_object()
         if request.method == 'GET':
-            instance = ShoppingCart.objects.create(recipe=recipe,
-                                                   user=request.user)
-            serializer = serializers.ShoppingCartSerializer(instance)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            self.new_entry(ShoppingCart,
+                           recipe,
+                           request.user,
+                           ShoppingCartSerializer)
         instance = ShoppingCart.objects.filter(recipe=recipe,
                                                user=request.user)
         instance.delete()
@@ -95,10 +97,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         recipe = self.get_object()
         if request.method == 'GET':
-            instance = Favorite.objects.create(recipe=recipe,
-                                               user=request.user)
-            serializer = serializers.FavoriteSerializer(instance)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            self.new_entry(Favorite,
+                           recipe,
+                           request.user,
+                           FavoriteSerializer)
         instance = Favorite.objects.filter(recipe=recipe, user=request.user)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def new_entry(self, model, recipe, user, serializer):
+        if model.objects.filter(user=user,
+                                recipe=recipe).exists():
+            return Response({'errors': 'Рецепт уже добавлен!'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        instance = model.objects.create(recipe=recipe,
+                                        user=user)
+        serializer = serializer(instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
