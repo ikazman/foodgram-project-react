@@ -72,12 +72,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create_amount(self, ingredients, recipe):
         for item in ingredients:
-            id = item['ingredient']['id']
-            amount = item['amount']
             IngredientsAmount.objects.create(
-                ingredient=Ingredient(id=id),
+                ingredient_id=item['ingredient']['id'],
                 recipe=recipe,
-                amount=amount)
+                amount=item['amount'])
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop('recipes_amounts')
