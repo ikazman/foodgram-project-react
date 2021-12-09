@@ -74,7 +74,6 @@ jobs:
           sudo docker-compose up -d
           sudo docker-compose exec -T backend python manage.py collectstatic --noinput
           sudo docker-compose exec -T backend python manage.py migrate --noinput
-          sudo docker-compose exec -T backend guybrush --path data
 
   send_message:
     runs-on: ubuntu-latest
