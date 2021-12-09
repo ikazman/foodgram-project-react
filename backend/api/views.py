@@ -19,14 +19,12 @@ User = get_user_model()
 
 
 class TagViewSet(viewsets.ModelViewSet):
-
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
     pagination_class = None
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
-
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
     filter_backends = [DjangoFilterBackend, ]
@@ -35,7 +33,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-
     queryset = Recipe.objects.all().order_by('-id')
     serializer_class = serializers.RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly,
@@ -56,6 +53,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk=None):
         recipe = self.get_object()
         if request.method == 'GET':
+            if ShoppingCart.objects.filter(recipe=recipe,
+                                           user=request.user).exists():
+                return Response({'errors': 'Рецепт уже в списоке покупок'},
+                                status=status.HTTP_400_BAD_REQUEST)
             instance = ShoppingCart.objects.create(recipe=recipe,
                                                    user=request.user)
             serializer = serializers.ShoppingCartSerializer(instance)
@@ -106,13 +107,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
         instance = Favorite.objects.filter(recipe=recipe, user=request.user)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    # def new_entry(self, model, recipe, user, serializer):
-    #     if model.objects.filter(user=user,
-    #                             recipe=recipe).exists():
-    #         return Response({'errors': 'Рецепт уже добавлен!'},
-    #                         status=status.HTTP_400_BAD_REQUEST)
-    #     instance = model.objects.create(recipe=recipe,
-    #                                     user=user)
-    #     serializer = serializer(instance)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)

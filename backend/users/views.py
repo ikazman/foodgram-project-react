@@ -21,7 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             if Follow.objects.filter(user=request.user,
                                      following=author).exists():
-                return Response({'errors': 'Рецепт уже добавлен в покупки'},
+                return Response({'errors': 'Подписка уже существует!'},
                                 status=status.HTTP_400_BAD_REQUEST)
             Follow.objects.create(user=request.user, following=author)
             serializer = FollowSerializer(author, context={'request': request})
