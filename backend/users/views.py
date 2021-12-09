@@ -20,7 +20,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def subscribe(self, request, pk=None):
         author = self.get_object()
         if request.method == 'GET':
-            if Follow.objects.filter(user=request.user, author=author).exists():
+            if Follow.objects.filter(user=request.user,
+                                     author=author).exists():
                 return Response({'errors': 'Подписка уже создана'},
                                 status=status.HTTP_400_BAD_REQUEST)
             Follow.objects.create(user=request.user, following=author)
