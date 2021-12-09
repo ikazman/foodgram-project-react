@@ -26,7 +26,6 @@ class UserViewSet(viewsets.ModelViewSet):
         elif request.method == 'DELETE':
             Follow.objects.filter(user=request.user, following=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return None
 
 
 class FollowViewSet(viewsets.ModelViewSet):
