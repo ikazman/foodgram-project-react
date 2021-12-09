@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import F, Q
 
 
 class User(AbstractUser):
@@ -32,7 +31,7 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user', 'following'],
                                     name='unique_pair'),
-            models.CheckConstraint(check=~Q(user=F('following')),
+            models.CheckConstraint(check=~models.Q(user=models.F('following')),
                                    name='forbidden_selfsubscribe'),
         ]
 

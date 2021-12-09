@@ -1,10 +1,8 @@
 from drf_extra_fields.fields import Base64ImageField
-
 from django.contrib.auth import password_validation
 from rest_framework import serializers
 
 from recipes.models import Recipe
-
 from .models import Follow, User
 
 
