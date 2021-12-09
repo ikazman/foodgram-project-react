@@ -20,12 +20,14 @@ class UserViewSet(viewsets.ModelViewSet):
     def subscribe(self, request, pk=None):
         author = self.get_object()
         if request.method == 'GET':
+            if Follow.objects.filter(user=request.user, author=author).exists():
+                return Response({'errors': 'Подписка уже создана'},
+                                status=status.HTTP_400_BAD_REQUEST)
             Follow.objects.create(user=request.user, following=author)
             serializer = FollowSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            Follow.objects.filter(user=request.user, following=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        Follow.objects.filter(user=request.user, following=author).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FollowViewSet(viewsets.ModelViewSet):
