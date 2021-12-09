@@ -112,7 +112,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_tags(self, data):
-        if len(data) > set(data):
+        if len(data) > len(set(data)):
             return serializers.ValidationError(
                 'Тэги содержат дубликаты!')
         return data
