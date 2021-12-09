@@ -23,10 +23,9 @@ class UserViewSet(viewsets.ModelViewSet):
             Follow.objects.create(user=request.user, following=author)
             serializer = FollowSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            Follow.objects.filter(user=request.user, following=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return None
+        instance = Follow.objects.filter(user=request.user, following=author)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FollowViewSet(viewsets.ModelViewSet):
