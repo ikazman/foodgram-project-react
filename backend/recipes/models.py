@@ -11,14 +11,14 @@ class Tag(models.Model):
     color = ColorField(default='#FF0000')
     slug = models.SlugField(verbose_name='Идентификатор тега', unique=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
-        constraints = [models.UniqueConstraint(
-            fields=['color', 'name'], name='unique_tag_pair')]
         verbose_name = 'Тэг'
         verbose_name_plural = 'Тэги'
+        constraints = [models.UniqueConstraint(
+            fields=['color', 'name'], name='unique_tag_pair')]
+
+    def __str__(self):
+        return self.name
 
 
 class Ingredient(models.Model):
@@ -28,10 +28,10 @@ class Ingredient(models.Model):
                                         max_length=150)
 
     class Meta:
-        constraints = [models.UniqueConstraint(
-            fields=['name', 'measurement_unit'], name='unique_unit_pair')]
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = [models.UniqueConstraint(
+            fields=['name', 'measurement_unit'], name='unique_unit_pair')]
 
     def __str__(self):
         return f'{self.name} {self.measurement_unit}'
@@ -57,27 +57,27 @@ class Recipe(models.Model):
         verbose_name='Время приготовления')
 
     class Meta:
-        constraints = [models.UniqueConstraint(
-            fields=['author', 'name'], name='unique_recipe_pair')]
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        constraints = [models.UniqueConstraint(
+            fields=['author', 'name'], name='unique_recipe_pair')]
 
 
 class IngredientsAmount(models.Model):
     ingredient = models.ForeignKey(Ingredient,
                                    on_delete=models.CASCADE,
-                                   related_name='ingredient_amount',
+                                   related_name='ingredient_amounts',
                                    verbose_name='Ингредиент')
     recipe = models.ForeignKey(Recipe,
                                on_delete=models.CASCADE,
-                               related_name='recipes_amount',
+                               related_name='recipes_amounts',
                                verbose_name='Рецепт')
     amount = models.PositiveSmallIntegerField(verbose_name='Количество')
 
     class Meta:
+        verbose_name = 'Количество ингредиентов'
         constraints = [models.UniqueConstraint(
             fields=['ingredient', 'recipe'], name='unique_ingredient_pair')]
-        verbose_name = 'Количество ингредиентов'
 
 
 class ShoppingCart(models.Model):
@@ -90,9 +90,9 @@ class ShoppingCart(models.Model):
                              related_name='cart')
 
     class Meta:
+        verbose_name = 'Список покупок'
         constraints = [models.UniqueConstraint(
             fields=['recipe', 'user'], name='unique_cart_pair')]
-        verbose_name = 'Список покупок'
 
 
 class Favorite(models.Model):
