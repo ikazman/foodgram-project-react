@@ -1,6 +1,19 @@
 ![foodgram_project_react workflow](https://github.com/ikazman/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 # foodgram_finale_project
+
+### Проект доступен по адресу:
+
+```bash
+http://51.250.13.1/recipes
+```
+
+Данные для входа с правами администратора:
+```
+email: guybrush@threepwood.pirate
+password: monkey
+```
+
 ### Описание проекта:
 
 Cайт Foodgram, «Продуктовый помощник»: yа этом сервисе пользователи могут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
@@ -36,12 +49,12 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-4) В локальном файле nginx/default.conf указать публичный ip-адрес сервера
+4) В локальном файле infra/nginx.conf указать публичный ip-адрес сервера
 
-5) Скопировать на сервер docker-compose.yaml и nginx/default.conf:
+5) Скопировать на сервер папку с docker-compose.yaml и nginx.conf:
 ```bash
 scp docker-compose.yaml <username>@<ip-adress>:/home/<username>/
-scp -r nginx/default.conf <username>@<ip-adress>:/home/<username>/
+scp nginx.conf <username>@<ip-adress>:/home/<username>/
 ```
 6) Добавить в Secrets GitHub Actions переменные окружения:
 ```bash
@@ -73,20 +86,9 @@ TELEGRAM_TO=<id пользователя, которому будет напра
 TELEGRAM_TOKEN=<токен бота, который будет направлять сообщение>
 
 ```
-
-7) После деплоя выполнить на серевере команды для миграций и сбора статики:
-```python
-sudo docker-compose exec backend python manage.py migrate --no-input
-sudo docker-compose exec backend python manage.py collectstatic --no-input
-```
-8) Выполнить на сервере команды для заполения базы:
-
-```python
-docker-compose exec backend python manage.py guybrush --path data
-```
 &nbsp;
 ---
-### Документация к api: http://217.28.228.130/api/doc/
+### Документация к api: http://51.250.13.1/api/doc/
 &nbsp;
 
 ### Образ на DockerHub: ikazmandockerhub/foodgram:latest 
