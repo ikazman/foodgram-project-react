@@ -8,7 +8,6 @@ from .serializers import FollowSerializer, UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
-
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
@@ -33,7 +32,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class FollowViewSet(viewsets.ModelViewSet):
-
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
 

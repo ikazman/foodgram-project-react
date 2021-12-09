@@ -8,7 +8,6 @@ User = get_user_model()
 
 
 class IngredientFilter(FilterSet):
-
     name = filters.CharFilter(field_name='name', lookup_expr='istartswith')
 
     class Meta:
@@ -17,7 +16,6 @@ class IngredientFilter(FilterSet):
 
 
 class RecipeFilter(FilterSet):
-
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.BooleanFilter(method='is_in_favorited')
