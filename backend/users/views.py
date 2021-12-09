@@ -24,7 +24,6 @@ class UserViewSet(viewsets.ModelViewSet):
                                      following=author).exists():
                 return Response({'errors': 'Рецепт уже добавлен в покупки'},
                                 status=status.HTTP_400_BAD_REQUEST)
-
             Follow.objects.create(user=request.user, following=author)
             serializer = FollowSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
