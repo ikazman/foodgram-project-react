@@ -19,12 +19,14 @@ User = get_user_model()
 
 
 class TagViewSet(viewsets.ModelViewSet):
+
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
     pagination_class = None
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
+
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
     filter_backends = [DjangoFilterBackend, ]
@@ -33,6 +35,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+
     queryset = Recipe.objects.all().order_by('-id')
     serializer_class = serializers.RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly,
@@ -97,7 +100,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                                user=request.user)
             serializer = serializers.FavoriteSerializer(instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            Favorite.objects.filter(recipe=recipe, user=request.user).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return None
+        instance = Favorite.objects.filter(recipe=recipe, user=request.user)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
