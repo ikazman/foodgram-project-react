@@ -79,15 +79,15 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop('recipes_amounts')
+        tags_in = self.validated_data.get('tags')
         recipe = Recipe.objects.create(**validated_data)
-        tags_in = self.initial_data.get('tags')
         recipe.tags.set(tags_in)
         self.create_amount(ingredients_data, recipe)
         return recipe
 
     def update(self, recipe, validated_data):
         ingredients_data = validated_data.pop('recipes_amounts')
-        tags_in = self.initial_data.get('tags')
+        tags_in = self.validated_data.get('tags')
         recipe = super().update(recipe, validated_data)
         recipe.tags.clear()
         recipe.tags.set(tags_in)
@@ -104,6 +104,12 @@ class RecipeSerializer(serializers.ModelSerializer):
             if int(item['amount']) < 1:
                 return serializers.ValidationError(
                     'Количество ингридиента не может быть нулевым!')
+        return data
+
+    def validate_tags(self, data):
+        if len(data) > set(data):
+            return serializers.ValidationError(
+                'Тэги содержат дубликаты!')
         return data
 
     def validate_cooking_time(self, data):
