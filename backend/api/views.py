@@ -60,11 +60,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                                    user=request.user)
             serializer = serializers.ShoppingCartSerializer(instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            ShoppingCart.objects.filter(recipe=recipe,
-                                        user=request.user).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return None
+        instance = ShoppingCart.objects.filter(recipe=recipe,
+                                               user=request.user)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['get'],
             detail=False,
