@@ -13,7 +13,8 @@ router.register('tags', TagViewSet, basename='Tag')
 
 
 urlpatterns = [
-    path('users/subscriptions/', FollowViewSet.as_view(({'get': 'list'}))),
+    path('users/subscriptions/',
+         FollowViewSet.as_view(({'get': 'list'})), name='Subscriptions'),
     path('auth/', include('djoser.urls.authtoken')),
     path('', include('djoser.urls')),
     path('', include(router.urls)),
