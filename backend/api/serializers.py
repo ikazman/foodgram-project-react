@@ -101,26 +101,27 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_list = []
         if not data:
             return serializers.ValidationError(
-                'В рецепте отсутствуют ингредиенты!')
+                {'errors': 'В рецепте отсутствуют ингредиенты!'})
         for item in data:
             if int(item['amount']) < 1:
                 return serializers.ValidationError(
-                    'Количество ингридиента не может быть нулевым!')
+                    {'errors': 'Количество ингридиента не может быть нулевым!'})
             if item['ingredient'] in ingredients_list:
                 return serializers.ValidationError(
-                    'Ингредиенты содержат дубликаты!')
+                    {'errors': 'Ингредиенты содержат дубликаты!'})
             ingredients_list.append(item['ingredient'])
         return data
 
     def validate_tags(self, data):
         if len(data) > len(set(data)):
             return serializers.ValidationError(
-                'Тэги содержат дубликаты!')
+                {'errors': 'Тэги содержат дубликаты!'})
         return data
 
     def validate_cooking_time(self, data):
         if data < 1:
-            return serializers.ValidationError('Время меньше нуля!')
+            return serializers.ValidationError(
+                {'errors': 'Время меньше нуля!'})
         return data
 
 
