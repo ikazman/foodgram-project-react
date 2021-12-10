@@ -105,7 +105,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         for item in data:
             if int(item['amount']) < 1:
                 return serializers.ValidationError(
-                    {'errors': 'Количество ингридиента не может быть нулевым!'})
+                    {'errors': 'Количество ингридиента не может быть нулевым!'}
+                )
             if item['ingredient'] in ingredients_list:
                 return serializers.ValidationError(
                     {'errors': 'Ингредиенты содержат дубликаты!'})
