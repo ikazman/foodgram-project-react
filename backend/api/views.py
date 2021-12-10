@@ -11,6 +11,7 @@ from recipes.models import (Favorite, Ingredient, IngredientsAmount, Recipe,
                             ShoppingCart, Tag,)
 from . import serializers
 from .filters import IngredientFilter, RecipeFilter
+from .paginators import RecipeViewSetPagination
 from .permissions import IsAuthorOrReadOnly
 
 User = get_user_model()
@@ -37,6 +38,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                           IsAuthorOrReadOnly, ]
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = RecipeFilter
+    pagination_class = RecipeViewSetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
