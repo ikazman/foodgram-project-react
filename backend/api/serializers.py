@@ -56,6 +56,15 @@ class RecipeSerializer(serializers.ModelSerializer):
             'is_favorited',
         )
 
+    def get_recipes(self, obj):
+        request_params = self.context['request'].query_params
+        queryset = ShoppingCart.objects.filter(user=obj).order_by('-id')
+        if request_params:
+            recipes_limit = int(request_params['recipes_limit'])
+            queryset = queryset[:recipes_limit]
+        serializer = ShoppingCartSerializer(queryset, many=True)
+        return serializer.data
+
     def to_representation(self, obj):
         self.fields['tags'] = TagSerializer(many=True)
         return super().to_representation(obj)
